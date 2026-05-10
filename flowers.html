@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Bouquet Builder — Koila Baba Crochet</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+</head>
+<body data-page="flowers">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a class="nav-logo" href="index.html">
+      <span class="brand-name">Koila Baba <span>Crochet</span></span>
+      <span class="brand-sub">Handmade Bouquets</span>
+    </a>
+    <div class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="flowers.html" class="active">Custom Bouquet</a>
+    <a href="https://wa.me/8638733586" target="_blank">WhatsApp Us</a>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div style="background:var(--cream);padding:28px 20px 12px;border-bottom:1px solid var(--border);">
+    <h1 style="font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">Build Your Bouquet</h1>
+    <p style="font-family:var(--font-display);font-style:italic;font-size:13px;color:var(--text-light);">Pick your flowers, wrapper & extras. We'll craft it with love.</p>
+  </div>
+
+  <!-- BUILDER -->
+  <div class="builder-page">
+
+    <!-- STEP 1: FLOWERS -->
+    <div class="builder-step">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <h2>Choose Your Flowers</h2>
+      </div>
+      <div class="step-divider"></div>
+      <p class="step-hint">Select one or more blooms. Mix and match freely!</p>
+      <div class="item-grid" id="flowers-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- STEP 2: WRAPPER -->
+    <div class="builder-step">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <h2>Choose a Wrapper / Base</h2>
+      </div>
+      <div class="step-divider"></div>
+      <p class="step-hint">Pick one packaging style for your bouquet.</p>
+      <div class="item-grid" id="wrappers-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- STEP 3: EXTRAS -->
+    <div class="builder-step">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <h2>Add Extras</h2>
+      </div>
+      <div class="step-divider"></div>
+      <p class="step-hint">Optional add-ons to make it extra special.</p>
+      <div class="item-grid" id="extras-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- SPACER for fixed summary -->
+    <div style="height:160px;"></div>
+  </div>
+
+  <!-- BOUQUET SUMMARY (FIXED BOTTOM) -->
+  <div class="bouquet-summary">
+    <h3>Your Bouquet 🌸</h3>
+    <p class="summary-empty" id="bouquet-empty">Your bouquet is empty.<br>Start selecting blooms above ↑</p>
+    <div class="summary-items" id="bouquet-items" style="display:none;"></div>
+    <div class="summary-footer">
+      <span class="summary-total-label">Total</span>
+      <span class="summary-total" id="bouquet-total">₹0</span>
+    </div>
+    <button class="btn-whatsapp" onclick="orderBouquet()">
+      <span>⊕</span> Order on WhatsApp
+    </button>
+    <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:6px;">We'll confirm availability &amp; delivery on WhatsApp.</p>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Koila Baba Crochet</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    body { background: var(--warm-white); }
+  </style>
+
+  <!-- LOGIN LOGIC IN HEAD — guaranteed available before any onclick fires -->
+  <script>
+    var ADMIN_PASS = '234123';
+
+    function doLogin() {
+      var input = document.getElementById('admin-password');
+      var error = document.getElementById('login-error');
+      var entered = input ? input.value.trim() : '';
+
+      if (entered === ADMIN_PASS) {
+        sessionStorage.setItem('kbc_admin', 'true');
+        document.getElementById('admin-login').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'block';
+        if (typeof renderAdminDashboard === 'function') renderAdminDashboard();
+      } else {
+        if (error) {
+          error.style.display = 'block';
+          error.textContent = 'Wrong password. Try again.';
+        }
+        if (input) { input.value = ''; input.focus(); }
+      }
+    }
+
+    function doLogout() {
+      sessionStorage.removeItem('kbc_admin');
+      document.getElementById('admin-login').style.display = 'flex';
+      document.getElementById('admin-panel').style.display = 'none';
+    }
+
+    window.addEventListener('load', function() {
+      if (sessionStorage.getItem('kbc_admin') === 'true') {
+        document.getElementById('admin-login').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'block';
+        if (typeof renderAdminDashboard === 'function') renderAdminDashboard();
+      } else {
+        document.getElementById('admin-login').style.display = 'flex';
+        document.getElementById('admin-panel').style.display = 'none';
+      }
+    });
+  </script>
+</head>
+<body data-page="admin">
+
+  <!-- ===== LOGIN PAGE ===== -->
+  <div id="admin-login" class="admin-login" style="display:flex;">
+    <div class="login-card">
+      <div class="brand-name">Koila Baba <span>Crochet</span></div>
+      <div class="admin-label">Admin Dashboard</div>
+      <div class="login-divider"></div>
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          id="admin-password"
+          placeholder="Enter your admin password"
+          autocomplete="off"
+          onkeydown="if(event.key==='Enter'){ event.preventDefault(); doLogin(); }"
+        />
+      </div>
+      <p id="login-error" style="display:none;color:#c0392b;font-size:13px;margin-top:4px;font-family:sans-serif;"></p>
+      <button
+        type="button"
+        class="btn-primary"
+        style="width:100%;margin-top:12px;"
+        onclick="doLogin()"
+      >Access Dashboard</button>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN PANEL ===== -->
+  <div id="admin-panel" style="display:none;">
+
+    <!-- Admin Navbar -->
+    <nav class="admin-nav">
+      <div>
+        <div class="brand-name">Koila Baba <span>Crochet</span></div>
+        <div class="admin-label">Admin Panel</div>
+      </div>
+      <button type="button" class="btn-logout" onclick="doLogout()">Logout</button>
+    </nav>
+
+    <!-- Admin Content -->
+    <div class="admin-content">
+      <h1 class="dashboard-title">Dashboard</h1>
+
+      <!-- STATS -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Products</div>
+          <div class="stat-value" id="stat-total">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Flowers</div>
+          <div class="stat-value" id="stat-flowers">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Characters</div>
+          <div class="stat-value" id="stat-characters">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Accessories</div>
+          <div class="stat-value" id="stat-occasions">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Bags</div>
+          <div class="stat-value" id="stat-bags">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Charms</div>
+          <div class="stat-value" id="stat-extras">—</div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions-section">
+        <h3>Quick Actions</h3>
+        <div class="quick-actions">
+          <button type="button" class="btn-action btn-add" onclick="openAddModal()">+ Add New Product</button>
+          <button type="button" class="btn-action btn-view" onclick="renderAllAdminProducts()">🌸 View All Products</button>
+          <button type="button" class="btn-action btn-store" onclick="window.open('index.html','_blank')">🌿 View Store</button>
+          <button type="button" class="btn-action btn-reset" onclick="resetAllProducts()">⚠ Reset All</button>
+        </div>
+      </div>
+
+      <!-- ALL PRODUCTS SECTION -->
+      <div id="all-products-section" style="display:none;" class="recent-products-section">
+        <h3>All Products</h3>
+        <div id="all-products-list"></div>
+      </div>
+
+      <!-- RECENT PRODUCTS -->
+      <div id="recent-products-section" class="recent-products-section">
+        <h3>Recent Products</h3>
+        <div id="recent-products-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADD / EDIT MODAL ===== -->
+  <div class="modal-overlay" id="product-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h3 id="modal-title">Add New Product</h3>
+      <input type="hidden" id="modal-product-id" />
+
+      <div class="form-group">
+        <label>Product Name *</label>
+        <input type="text" id="modal-name" placeholder="e.g. Crimson Rose Bouquet" />
+      </div>
+      <div class="form-group">
+        <label>Emoji *</label>
+        <input type="text" id="modal-emoji" placeholder="🌹" maxlength="4" />
+      </div>
+      <div class="form-group">
+        <label>Price (₹) *</label>
+        <input type="number" id="modal-price" placeholder="350" min="1" />
+      </div>
+      <div class="form-group">
+        <label>Category *</label>
+        <select id="modal-category">
+          <option value="">Select category</option>
+          <option value="characters">Characters</option>
+          <option value="bouquet">Bouquet</option>
+          <option value="pipe-cleaner">Pipe Cleaner Flowers</option>
+          <option value="accessories">Accessories</option>
+          <option value="bags">Bags</option>
+          <option value="charms">Charms</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="modal-description" rows="2" placeholder="Short description..." style="resize:vertical;"></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="button" class="btn-primary" onclick="saveProduct()">Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>

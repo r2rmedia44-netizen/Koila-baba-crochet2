@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Koila Baba Crochet</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+</head>
+<body data-page="shop">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a class="nav-logo" href="index.html">
+      <span class="brand-name">Koila Baba <span>Crochet</span></span>
+      <span class="brand-sub">Handmade Bouquets</span>
+    </a>
+    <div class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="shop.html" class="active">Shop</a>
+    <a href="flowers.html">Custom Bouquet</a>
+    <a href="https://wa.me/8638733586" target="_blank">WhatsApp Us</a>
+  </div>
+
+  <!-- SHOP HERO -->
+  <div class="shop-hero">
+    <h1>Shop</h1>
+    <p>Handcrafted crochet pieces made with love<br>— browse all categories</p>
+  </div>
+
+  <!-- CATEGORY FILTER -->
+  <div class="category-filter-wrap">
+    <div class="category-filter" id="category-filter">
+      <div class="cat-btn active" data-cat="all">
+        <div class="cat-btn-icon">🌸</div>
+        <span>All Items</span>
+      </div>
+      <div class="cat-btn" data-cat="characters">
+        <div class="cat-btn-icon">🧸</div>
+        <span>Characters</span>
+      </div>
+      <div class="cat-btn" data-cat="bouquet">
+        <div class="cat-btn-icon">💐</div>
+        <span>Bouquet</span>
+      </div>
+      <div class="cat-btn" data-cat="pipe-cleaner">
+        <div class="cat-btn-icon">🌺</div>
+        <span>Pipe Cleaner</span>
+      </div>
+      <div class="cat-btn" data-cat="accessories">
+        <div class="cat-btn-icon">✨</div>
+        <span>Accessories</span>
+      </div>
+      <div class="cat-btn" data-cat="bags">
+        <div class="cat-btn-icon">👜</div>
+        <span>Bags</span>
+      </div>
+      <div class="cat-btn" data-cat="charms">
+        <div class="cat-btn-icon">🌟</div>
+        <span>Charms</span>
+      </div>
+    </div>
+
+    <!-- INDICATOR DOTS -->
+    <div class="cat-indicator">
+      <div class="cat-dot active"></div>
+      <div class="cat-dot"></div>
+      <div class="cat-dot"></div>
+      <div class="cat-dot"></div>
+      <div class="cat-dot"></div>
+      <div class="cat-dot"></div>
+      <div class="cat-dot"></div>
+    </div>
+  </div>
+
+  <!-- PRODUCT GRID -->
+  <section class="product-grid-section">
+    <div class="grid-header">
+      <h2 id="grid-title">All Items</h2>
+      <p class="grid-count" id="grid-count">Loading...</p>
+    </div>
+    <div class="product-grid" id="product-grid">
+      <!-- Rendered by JS -->
+    </div>
+  </section>
+
+  <!-- DON'T SEE WHAT YOU WANT -->
+  <section style="padding:32px 20px 48px;text-align:center;background:var(--cream);">
+    <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">Don't see what you want?</h3>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:20px;line-height:1.6;">We take custom orders! Tell us what you have in mind and we'll craft it just for you.</p>
+    <a href="https://wa.me/8638733586?text=Hi%20Koila%20Baba%20Crochet!%20I%20have%20a%20custom%20order%20request%20%F0%9F%8C%B8" target="_blank" class="btn-whatsapp" style="max-width:260px;margin:0 auto;display:flex;">
+      <span>⊕</span> Custom Order via WhatsApp
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <div class="brand-name">Koila Baba <span>Crochet</span></div>
+      <p>Every piece handcrafted with premium yarn and packed with love. A gift that truly lasts forever.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Shop</h4>
+      <a href="shop.html">Shop All</a>
+      <a href="flowers.html">Custom Builder</a>
+      <a href="shop.html?cat=characters">Characters</a>
+      <a href="shop.html?cat=accessories">Accessories</a>
+    </div>
+    <div class="footer-section">
+      <h4>Contact</h4>
+      <a href="https://wa.me/8638733586" target="_blank">WhatsApp Us</a>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 Koila Baba Crochet. Handmade with love 🌸
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
+  <script>
+    // Check for URL param to pre-select category
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('cat');
+      if (cat) {
+        // Override default after DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+          const btn = document.querySelector(`.cat-btn[data-cat="${cat}"]`);
+          if (btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // currentCategory is set in initShop, so we need to update after
+            setTimeout(() => {
+              window.currentCategory = cat;
+              updateCatIndicator(cat);
+              renderShopProducts();
+            }, 10);
+          }
+        }, { once: true });
+      }
+    })();
+  </script>
+</body>
+</html>
