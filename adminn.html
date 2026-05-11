@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koila Baba Crochet Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Lato',sans-serif;
+background:#F5F0E8;
+color:#2C1810;
+}
+
+button{
+cursor:pointer;
+border:none;
+}
+
+#login-screen{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+
+.login-box{
+background:#fff;
+padding:30px;
+border-radius:16px;
+width:100%;
+max-width:340px;
+box-shadow:0 4px 24px rgba(0,0,0,.08);
+}
+
+.brand{
+font-family:'Playfair Display',serif;
+font-size:28px;
+font-weight:700;
+margin-bottom:20px;
+color:#5C1A1A;
+text-align:center;
+}
+
+.field{
+margin-bottom:15px;
+}
+
+.field label{
+display:block;
+font-size:12px;
+margin-bottom:6px;
+font-weight:700;
+}
+
+.field input,
+.field textarea,
+.field select{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:14px;
+}
+
+.btn{
+width:100%;
+padding:14px;
+background:#5C1A1A;
+color:#fff;
+border-radius:8px;
+font-weight:700;
+}
+
+#panel-screen{
+display:none;
+padding:20px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.add-btn{
+padding:12px 16px;
+background:#5C1A1A;
+color:#fff;
+border-radius:8px;
+font-weight:700;
+}
+
+.products{
+display:grid;
+gap:14px;
+}
+
+.card{
+background:#fff;
+padding:14px;
+border-radius:14px;
+box-shadow:0 2px 10px rgba(0,0,0,.05);
+display:flex;
+gap:14px;
+align-items:center;
+}
+
+.card img{
+width:80px;
+height:80px;
+object-fit:cover;
+border-radius:10px;
+background:#eee;
+}
+
+.card .emoji{
+width:80px;
+height:80px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:38px;
+background:#eee;
+border-radius:10px;
+}
+
+.card-info{
+flex:1;
+}
+
+.card-info h3{
+font-family:'Playfair Display',serif;
+margin-bottom:4px;
+}
+
+.card-info p{
+font-size:14px;
+margin-bottom:4px;
+}
+
+.delete-btn{
+background:#ffebeb;
+color:#c0392b;
+padding:10px 12px;
+border-radius:8px;
+font-weight:700;
+}
+
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.5);
+display:none;
+justify-content:center;
+align-items:flex-end;
+z-index:999;
+}
+
+.overlay.show{
+display:flex;
+}
+
+.modal{
+background:#fff;
+width:100%;
+max-width:500px;
+border-radius:20px 20px 0 0;
+padding:20px;
+max-height:90vh;
+overflow:auto;
+}
+
+.modal h2{
+margin-bottom:20px;
+font-family:'Playfair Display',serif;
+}
+
+.preview{
+width:100%;
+height:220px;
+border-radius:12px;
+overflow:hidden;
+background:#f0f0f0;
+margin-bottom:10px;
+display:none;
+}
+
+.preview img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.toast{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#2C1810;
+color:#fff;
+padding:12px 18px;
+border-radius:8px;
+opacity:0;
+transition:.3s;
+z-index:9999;
+}
+
+.toast.show{
+opacity:1;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="login-screen">
+
+<div class="login-box">
+
+<div class="brand">
+Koila Baba Crochet
+</div>
+
+<div class="field">
+<label>Password</label>
+<input type="password" id="password">
+</div>
+
+<button class="btn" id="login-btn">
+Access Dashboard
+</button>
+
+</div>
+
+</div>
+
+<!-- PANEL -->
+
+<div id="panel-screen">
+
+<div class="topbar">
+
+<h1 class="brand" style="margin:0;font-size:24px;">
+Dashboard
+</h1>
+
+<button class="add-btn" id="open-modal">
++ Add Product
+</button>
+
+</div>
+
+<div class="products" id="products"></div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="overlay" id="overlay">
+
+<div class="modal">
+
+<h2>Add Product</h2>
+
+<div class="preview" id="preview-box">
+<img id="preview-img">
+</div>
+
+<div class="field">
+<label>Upload Image</label>
+<input type="file" id="image-file" accept="image/*">
+</div>
+
+<div class="field">
+<label>OR Image URL</label>
+<input type="text" id="image-url" placeholder="https://example.com/image.jpg">
+</div>
+
+<div class="field">
+<label>Product Name</label>
+<input type="text" id="name">
+</div>
+
+<div class="field">
+<label>Emoji</label>
+<input type="text" id="emoji">
+</div>
+
+<div class="field">
+<label>Price</label>
+<input type="number" id="price">
+</div>
+
+<div class="field">
+<label>Description</label>
+<textarea id="description"></textarea>
+</div>
+
+<div class="field">
+<label>Category</label>
+
+<select id="category">
+
+<option value="characters">Characters</option>
+
+<option value="bouquet">Bouquet</option>
+
+<option value="pipe-cleaner">Pipe Cleaner Flowers</option>
+
+<option value="accessories">Accessories</option>
+
+<option value="bags">Bags</option>
+
+<option value="charms">Charms</option>
+
+</select>
+
+
+</div>
+
+<button class="btn" id="save-btn">
+Save Product
+</button>
+
+<br><br>
+
+<button class="btn" style="background:#ddd;color:#000;" id="close-modal">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+const PASSWORD = "234123";
+
+const STORAGE_KEY = "kbc_products";
+
+let uploadedImage = "";
+
+function toast(msg){
+
+const t = document.getElementById("toast");
+
+t.innerText = msg;
+
+t.classList.add("show");
+
+setTimeout(()=>{
+t.classList.remove("show");
+},2500);
+
+}
+
+function getProducts(){
+
+return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+}
+
+function saveProducts(products){
+
+localStorage.setItem(STORAGE_KEY,JSON.stringify(products));
+
+}
+
+function renderProducts(){
+
+const products = getProducts();
+
+const container = document.getElementById("products");
+
+if(products.length === 0){
+
+container.innerHTML = "<p>No products yet.</p>";
+
+return;
+
+}
+
+container.innerHTML = "";
+
+products.reverse().forEach(product=>{
+
+const card = document.createElement("div");
+
+card.className = "card";
+
+card.innerHTML = `
+
+${product.image
+? `<img src="${product.image}" alt="">`
+: `<div class="emoji">${product.emoji}</div>`}
+
+<div class="card-info">
+<h3>${product.name}</h3>
+<p>₹${product.price}</p>
+<p>${product.description}</p>
+</div>
+
+<button class="delete-btn" onclick="deleteProduct(${product.id})">
+Delete
+</button>
+
+`;
+
+container.appendChild(card);
+
+});
+
+}
+
+function deleteProduct(id){
+
+let products = getProducts();
+
+products = products.filter(p=>p.id !== id);
+
+saveProducts(products);
+
+renderProducts();
+
+toast("Deleted");
+
+}
+
+function openModal(){
+
+document.getElementById("overlay").classList.add("show");
+
+}
+
+function closeModal(){
+
+document.getElementById("overlay").classList.remove("show");
+
+clearFields();
+
+}
+
+function clearFields(){
+
+document.getElementById("name").value = "";
+document.getElementById("emoji").value = "";
+document.getElementById("price").value = "";
+document.getElementById("description").value = "";
+document.getElementById("image-url").value = "";
+document.getElementById("image-file").value = "";
+
+uploadedImage = "";
+
+document.getElementById("preview-box").style.display = "none";
+
+}
+
+function showPreview(src){
+
+const box = document.getElementById("preview-box");
+
+const img = document.getElementById("preview-img");
+
+img.src = src;
+
+box.style.display = "block";
+
+}
+
+document.getElementById("image-file").addEventListener("change",function(e){
+
+const file = e.target.files[0];
+
+if(!file) return;
+
+if(file.size > 5 * 1024 * 1024){
+
+toast("Max image size 5MB");
+
+return;
+
+}
+
+const reader = new FileReader();
+
+reader.onload = function(event){
+
+uploadedImage = event.target.result;
+
+showPreview(uploadedImage);
+
+};
+
+reader.readAsDataURL(file);
+
+});
+
+document.getElementById("image-url").addEventListener("input",function(){
+
+const url = this.value.trim();
+
+if(url){
+
+uploadedImage = url;
+
+showPreview(url);
+
+}
+
+});
+
+document.getElementById("save-btn").addEventListener("click",function(){
+
+const name = document.getElementById("name").value.trim();
+
+const emoji = document.getElementById("emoji").value.trim();
+
+const price = document.getElementById("price").value.trim();
+
+const description = document.getElementById("description").value.trim();
+
+const category = document.getElementById("category").value;
+
+if(!name || !price){
+
+toast("Fill required fields");
+
+return;
+
+}
+
+const products = getProducts();
+
+products.push({
+
+id: Date.now(),
+
+name,
+emoji,
+price,
+description,
+category,
+
+image: uploadedImage
+
+});
+
+saveProducts(products);
+
+renderProducts();
+
+closeModal();
+
+toast("Product Added ✓");
+
+});
+
+document.getElementById("login-btn").addEventListener("click",function(){
+
+const val = document.getElementById("password").value;
+
+if(val === PASSWORD){
+
+document.getElementById("login-screen").style.display = "none";
+
+document.getElementById("panel-screen").style.display = "block";
+
+renderProducts();
+
+}else{
+
+toast("Wrong Password");
+
+}
+
+});
+
+document.getElementById("open-modal")
+.addEventListener("click",openModal);
+
+document.getElementById("close-modal")
+.addEventListener("click",closeModal);
+
+</script>
+
+</body>
+</html>
