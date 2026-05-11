@@ -1,199 +1,453 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — Koila Baba Crochet</title>
-  <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700&family=Dancing+Script:wght@600&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    body { background: var(--warm-white); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Lato', sans-serif; background: #F5F0E8; color: #2C1810; min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: inherit; }
+
+    /* ---- LOGIN ---- */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #FAF7F2;
+    }
+    .login-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px 28px;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 4px 24px rgba(92,26,26,0.12);
+      text-align: center;
+    }
+    .brand { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #5C1A1A; }
+    .brand span { font-family: 'Dancing Script', cursive; color: #C9973A; }
+    .sub-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #8B6555; font-weight: 700; margin-bottom: 28px; display: block; margin-top: 2px; }
+    .divider { height: 1px; background: #DDD0BB; margin: 0 0 24px; position: relative; }
+    .divider::before { content: 'SIGN IN'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #fff; padding: 0 10px; font-size: 9px; letter-spacing: 2px; color: #8B6555; font-weight: 700; }
+    .field-label { display: block; text-align: left; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #8B6555; font-weight: 700; margin-bottom: 6px; }
+    .field-input { width: 100%; padding: 12px 14px; border: 1.5px solid #DDD0BB; border-radius: 8px; font-family: 'Lato', sans-serif; font-size: 14px; color: #2C1810; background: #FAF7F2; outline: none; transition: border-color .2s; }
+    .field-input:focus { border-color: #5C1A1A; }
+    .error-msg { color: #c0392b; font-size: 13px; margin-top: 8px; display: none; }
+    .btn-login { width: 100%; margin-top: 14px; padding: 14px; background: #5C1A1A; color: #fff; border: none; border-radius: 6px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; cursor: pointer; transition: background .2s; }
+    .btn-login:hover { background: #7B3A2A; }
+
+    /* ---- PANEL ---- */
+    #panel-screen { display: none; }
+    .admin-topbar { background: #5C1A1A; padding: 0 16px; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+    .admin-topbar .brand { color: #fff; font-size: 16px; }
+    .admin-topbar .sub-label { color: #E8D5BE; margin: 0; }
+    .btn-logout { background: rgba(255,255,255,.15); color: #fff; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; padding: 8px 14px; border-radius: 4px; border: 1px solid rgba(255,255,255,.2); cursor: pointer; }
+    .btn-logout:hover { background: rgba(255,255,255,.25); }
+    .admin-body { padding: 20px 16px 80px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #5C1A1A; margin-bottom: 20px; }
+
+    /* ---- STATS ---- */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .stat-card { background: #fff; border-radius: 12px; padding: 18px 14px; box-shadow: 0 2px 8px rgba(92,26,26,.1); }
+    .stat-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #8B6555; font-weight: 700; margin-bottom: 6px; }
+    .stat-val { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: #5C1A1A; }
+
+    /* ---- SECTION CARD ---- */
+    .section-card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(92,26,26,.1); }
+    .section-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: #5C1A1A; margin-bottom: 14px; font-weight: 700; }
+
+    /* ---- ACTION BUTTONS ---- */
+    .actions-col { display: flex; flex-direction: column; gap: 10px; }
+    .act-btn { padding: 13px 16px; border-radius: 6px; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; border: none; cursor: pointer; text-align: left; transition: opacity .2s; }
+    .act-btn:hover { opacity: .85; }
+    .act-add   { background: #5C1A1A; color: #fff; }
+    .act-view  { background: #C9973A; color: #fff; }
+    .act-store { background: #27ae60; color: #fff; }
+    .act-reset { background: #E8D5BE; color: #2C1810; }
+
+    /* ---- PRODUCT ROWS ---- */
+    .prod-row { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid #DDD0BB; }
+    .prod-row:last-child { border-bottom: none; }
+    .prod-emoji { width: 56px; height: 56px; border-radius: 10px; background: #F0E8D8; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+    .prod-info { flex: 1; min-width: 0; }
+    .prod-info h4 { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; color: #2C1810; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .prod-price { font-family: 'Playfair Display', serif; font-size: 13px; color: #5C1A1A; font-weight: 700; }
+    .prod-cat { font-size: 10px; color: #8B6555; margin-left: 4px; }
+    .prod-btns { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn-edit   { font-size: 11px; padding: 7px 11px; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; background: #E8D5BE; color: #2C1810; }
+    .btn-del    { font-size: 11px; padding: 7px 11px; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; background: #fde8e8; color: #c0392b; }
+    .no-items   { color: #8B6555; font-style: italic; font-size: 13px; padding: 8px 0; }
+
+    /* ---- MODAL ---- */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
+    .overlay.show { display: flex; }
+    .modal-box { background: #FAF7F2; border-radius: 20px 20px 0 0; padding: 24px 20px 40px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+    .modal-handle { width: 40px; height: 4px; border-radius: 2px; background: #DDD0BB; margin: 0 auto 18px; }
+    .modal-box h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #2C1810; margin-bottom: 18px; }
+    .fld { margin-bottom: 14px; }
+    .fld label { display: block; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #8B6555; font-weight: 700; margin-bottom: 5px; }
+    .fld input, .fld select, .fld textarea { width: 100%; padding: 11px 13px; border: 1.5px solid #DDD0BB; border-radius: 8px; font-family: 'Lato', sans-serif; font-size: 14px; color: #2C1810; background: #fff; outline: none; transition: border-color .2s; }
+    .fld input:focus, .fld select:focus, .fld textarea:focus { border-color: #5C1A1A; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+    .modal-btns button { flex: 1; padding: 13px; border-radius: 6px; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; cursor: pointer; border: none; }
+    .btn-cancel { background: transparent; border: 2px solid #5C1A1A !important; color: #5C1A1A; }
+    .btn-save   { background: #5C1A1A; color: #fff; }
+
+    /* ---- TOAST ---- */
+    .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: #2C1810; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none; transition: all .3s; z-index: 9999; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media(min-width:480px) { .stat-grid { grid-template-columns: repeat(3,1fr); } }
   </style>
-
-  <!-- LOGIN LOGIC IN HEAD — guaranteed available before any onclick fires -->
-  <script>
-    var ADMIN_PASS = '234123';
-
-    function doLogin() {
-      var input = document.getElementById('admin-password');
-      var error = document.getElementById('login-error');
-      var entered = input ? input.value.trim() : '';
-
-      if (entered === ADMIN_PASS) {
-        sessionStorage.setItem('kbc_admin', 'true');
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-panel').style.display = 'block';
-        if (typeof renderAdminDashboard === 'function') renderAdminDashboard();
-      } else {
-        if (error) {
-          error.style.display = 'block';
-          error.textContent = 'Wrong password. Try again.';
-        }
-        if (input) { input.value = ''; input.focus(); }
-      }
-    }
-
-    function doLogout() {
-      sessionStorage.removeItem('kbc_admin');
-      document.getElementById('admin-login').style.display = 'flex';
-      document.getElementById('admin-panel').style.display = 'none';
-    }
-
-    window.addEventListener('load', function() {
-      if (sessionStorage.getItem('kbc_admin') === 'true') {
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-panel').style.display = 'block';
-        if (typeof renderAdminDashboard === 'function') renderAdminDashboard();
-      } else {
-        document.getElementById('admin-login').style.display = 'flex';
-        document.getElementById('admin-panel').style.display = 'none';
-      }
-    });
-  </script>
 </head>
-<body data-page="admin">
+<body>
 
-  <!-- ===== LOGIN PAGE ===== -->
-  <div id="admin-login" class="admin-login" style="display:flex;">
-    <div class="login-card">
-      <div class="brand-name">Koila Baba <span>Crochet</span></div>
-      <div class="admin-label">Admin Dashboard</div>
-      <div class="login-divider"></div>
-      <div class="form-group">
-        <label>Password</label>
-        <input
-          type="password"
-          id="admin-password"
-          placeholder="Enter your admin password"
-          autocomplete="off"
-          onkeydown="if(event.key==='Enter'){ event.preventDefault(); doLogin(); }"
-        />
-      </div>
-      <p id="login-error" style="display:none;color:#c0392b;font-size:13px;margin-top:4px;font-family:sans-serif;"></p>
-      <button
-        type="button"
-        class="btn-primary"
-        style="width:100%;margin-top:12px;"
-        onclick="doLogin()"
-      >Access Dashboard</button>
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="brand">Koila Baba <span>Crochet</span></div>
+    <span class="sub-label">Admin Dashboard</span>
+    <div class="divider"></div>
+    <label class="field-label" for="pw-input">Password</label>
+    <input class="field-input" type="password" id="pw-input" placeholder="Enter admin password" autocomplete="off" />
+    <div class="error-msg" id="pw-error">Incorrect password. Please try again.</div>
+    <button type="button" class="btn-login" id="login-btn">Access Dashboard</button>
+  </div>
+</div>
+
+<!-- ============ PANEL SCREEN ============ -->
+<div id="panel-screen">
+
+  <!-- Top bar -->
+  <div class="admin-topbar">
+    <div>
+      <div class="brand">Koila Baba <span>Crochet</span></div>
+      <span class="sub-label" style="color:#E8D5BE;">Admin Panel</span>
     </div>
+    <button type="button" class="btn-logout" id="logout-btn">Logout</button>
   </div>
 
-  <!-- ===== ADMIN PANEL ===== -->
-  <div id="admin-panel" style="display:none;">
+  <div class="admin-body">
+    <div class="page-title">Dashboard</div>
 
-    <!-- Admin Navbar -->
-    <nav class="admin-nav">
-      <div>
-        <div class="brand-name">Koila Baba <span>Crochet</span></div>
-        <div class="admin-label">Admin Panel</div>
-      </div>
-      <button type="button" class="btn-logout" onclick="doLogout()">Logout</button>
-    </nav>
+    <!-- Stats -->
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-val" id="s-total">0</div></div>
+      <div class="stat-card"><div class="stat-label">Flowers</div><div class="stat-val" id="s-flowers">0</div></div>
+      <div class="stat-card"><div class="stat-label">Characters</div><div class="stat-val" id="s-chars">0</div></div>
+      <div class="stat-card"><div class="stat-label">Accessories</div><div class="stat-val" id="s-acc">0</div></div>
+      <div class="stat-card"><div class="stat-label">Bags</div><div class="stat-val" id="s-bags">0</div></div>
+      <div class="stat-card"><div class="stat-label">Charms</div><div class="stat-val" id="s-charms">0</div></div>
+    </div>
 
-    <!-- Admin Content -->
-    <div class="admin-content">
-      <h1 class="dashboard-title">Dashboard</h1>
-
-      <!-- STATS -->
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Products</div>
-          <div class="stat-value" id="stat-total">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Flowers</div>
-          <div class="stat-value" id="stat-flowers">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Characters</div>
-          <div class="stat-value" id="stat-characters">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Accessories</div>
-          <div class="stat-value" id="stat-occasions">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Bags</div>
-          <div class="stat-value" id="stat-bags">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Charms</div>
-          <div class="stat-value" id="stat-extras">—</div>
-        </div>
-      </div>
-
-      <!-- QUICK ACTIONS -->
-      <div class="quick-actions-section">
-        <h3>Quick Actions</h3>
-        <div class="quick-actions">
-          <button type="button" class="btn-action btn-add" onclick="openAddModal()">+ Add New Product</button>
-          <button type="button" class="btn-action btn-view" onclick="renderAllAdminProducts()">🌸 View All Products</button>
-          <button type="button" class="btn-action btn-store" onclick="window.open('index.html','_blank')">🌿 View Store</button>
-          <button type="button" class="btn-action btn-reset" onclick="resetAllProducts()">⚠ Reset All</button>
-        </div>
-      </div>
-
-      <!-- ALL PRODUCTS SECTION -->
-      <div id="all-products-section" style="display:none;" class="recent-products-section">
-        <h3>All Products</h3>
-        <div id="all-products-list"></div>
-      </div>
-
-      <!-- RECENT PRODUCTS -->
-      <div id="recent-products-section" class="recent-products-section">
-        <h3>Recent Products</h3>
-        <div id="recent-products-list"></div>
+    <!-- Quick Actions -->
+    <div class="section-card">
+      <h3>Quick Actions</h3>
+      <div class="actions-col">
+        <button type="button" class="act-btn act-add"   id="btn-add-product">+ Add New Product</button>
+        <button type="button" class="act-btn act-view"  id="btn-view-all">🌸 View All Products</button>
+        <button type="button" class="act-btn act-store" id="btn-view-store">🌿 View Store</button>
+        <button type="button" class="act-btn act-reset" id="btn-reset-all">⚠ Reset All to Defaults</button>
       </div>
     </div>
-  </div>
 
-  <!-- ===== ADD / EDIT MODAL ===== -->
-  <div class="modal-overlay" id="product-modal" onclick="if(event.target===this)closeModal()">
-    <div class="modal">
-      <div class="modal-handle"></div>
-      <h3 id="modal-title">Add New Product</h3>
-      <input type="hidden" id="modal-product-id" />
+    <!-- All Products (hidden by default) -->
+    <div class="section-card" id="all-section" style="display:none;">
+      <h3>All Products <span id="all-count" style="font-size:13px;color:#8B6555;font-family:'Lato',sans-serif;font-weight:400;"></span></h3>
+      <div id="all-list"></div>
+    </div>
 
-      <div class="form-group">
-        <label>Product Name *</label>
-        <input type="text" id="modal-name" placeholder="e.g. Crimson Rose Bouquet" />
-      </div>
-      <div class="form-group">
-        <label>Emoji *</label>
-        <input type="text" id="modal-emoji" placeholder="🌹" maxlength="4" />
-      </div>
-      <div class="form-group">
-        <label>Price (₹) *</label>
-        <input type="number" id="modal-price" placeholder="350" min="1" />
-      </div>
-      <div class="form-group">
-        <label>Category *</label>
-        <select id="modal-category">
-          <option value="">Select category</option>
-          <option value="characters">Characters</option>
-          <option value="bouquet">Bouquet</option>
-          <option value="pipe-cleaner">Pipe Cleaner Flowers</option>
-          <option value="accessories">Accessories</option>
-          <option value="bags">Bags</option>
-          <option value="charms">Charms</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea id="modal-description" rows="2" placeholder="Short description..." style="resize:vertical;"></textarea>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
-        <button type="button" class="btn-primary" onclick="saveProduct()">Save Product</button>
-      </div>
+    <!-- Recent Products -->
+    <div class="section-card" id="recent-section">
+      <h3>Recent Products</h3>
+      <div id="recent-list"></div>
     </div>
   </div>
+</div>
 
-  <div id="toast" class="toast"></div>
-  <script src="script.js"></script>
+<!-- ============ ADD/EDIT MODAL ============ -->
+<div class="overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <h3 id="modal-title">Add New Product</h3>
+    <input type="hidden" id="edit-id" />
+    <div class="fld"><label>Product Name *</label><input type="text" id="f-name" placeholder="e.g. Crimson Rose" /></div>
+    <div class="fld"><label>Emoji *</label><input type="text" id="f-emoji" placeholder="🌹" maxlength="4" /></div>
+    <div class="fld"><label>Price ₹ *</label><input type="number" id="f-price" placeholder="350" min="1" /></div>
+    <div class="fld">
+      <label>Category *</label>
+      <select id="f-cat">
+        <option value="">— Select —</option>
+        <option value="characters">Characters</option>
+        <option value="bouquet">Bouquet</option>
+        <option value="pipe-cleaner">Pipe Cleaner Flowers</option>
+        <option value="accessories">Accessories</option>
+        <option value="bags">Bags</option>
+        <option value="charms">Charms</option>
+      </select>
+    </div>
+    <div class="fld"><label>Description</label><textarea id="f-desc" rows="2" placeholder="Short description..."></textarea></div>
+    <div class="modal-btns">
+      <button type="button" class="btn-cancel" id="modal-cancel">Cancel</button>
+      <button type="button" class="btn-save"   id="modal-save">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  // ── CONSTANTS ──
+  var PASSWORD   = '234123';
+  var STORE_KEY  = 'kbc_products';
+  var SESSION_KEY = 'kbc_admin';
+
+  var DEFAULT = [
+    {id:1,  name:'Bunny Bouquet',        emoji:'🐰', category:'characters',   price:380, description:'Adorable bunny holding a spring flower arrangement'},
+    {id:2,  name:'Teddy Bear',           emoji:'🧸', category:'characters',   price:420, description:'Huggable bear holding a mini bouquet with love'},
+    {id:3,  name:'Hello Kitty',          emoji:'🐱', category:'characters',   price:390, description:'Cute kitty crocheted with care and pink accents'},
+    {id:4,  name:'Little Owl',           emoji:'🦉', category:'characters',   price:360, description:'Wise little owl with a tiny flower crown'},
+    {id:5,  name:'Sweet Elephant',       emoji:'🐘', category:'characters',   price:400, description:'Gentle elephant with a bouquet of mini blooms'},
+    {id:6,  name:'Floppy Bunny',         emoji:'🐇', category:'characters',   price:370, description:'Floppy-eared bunny in soft pastel yarn'},
+    {id:7,  name:'Baby Dino',            emoji:'🦕', category:'characters',   price:380, description:'Cute dinosaur with a floral wreath around its neck'},
+    {id:8,  name:'Little Lamb',          emoji:'🐑', category:'characters',   price:360, description:'Sweet white lamb with a ribbon and flower'},
+    {id:9,  name:'Spring Bouquet',       emoji:'💐', category:'bouquet',      price:450, description:'Full spring bouquet with mixed blooms and ribbon'},
+    {id:10, name:'Rose Bunch',           emoji:'🌹', category:'bouquet',      price:520, description:'Classic crimson rose bunch in kraft wrap'},
+    {id:11, name:'Pastel Mix',           emoji:'🌸', category:'bouquet',      price:480, description:'Soft pastel blooms in a velvet-wrapped bundle'},
+    {id:12, name:'Sunflower Delight',    emoji:'🌻', category:'bouquet',      price:400, description:'Bright sunflowers with jute twine wrapping'},
+    {id:13, name:'Lavender Dreams',      emoji:'💜', category:'bouquet',      price:430, description:'Lavender and white blooms in lace wrap'},
+    {id:14, name:'Mini Wildflowers',     emoji:'🌼', category:'bouquet',      price:380, description:'Tiny wildflower cluster tied with satin ribbon'},
+    {id:15, name:'Pipe Cleaner Bouquet', emoji:'🌺', category:'pipe-cleaner', price:180, description:'Mini mixed bouquet of pipe cleaner flowers'},
+    {id:16, name:'Pipe Cleaner Lily',    emoji:'🌷', category:'pipe-cleaner', price:60,  description:'Elegant white lily crafted from pearl pipe cleaners'},
+    {id:17, name:'PC Sunflower',         emoji:'🌻', category:'pipe-cleaner', price:70,  description:'Cheerful sunflower in bright yellow pipe cleaner'},
+    {id:18, name:'PC Rose',              emoji:'🌹', category:'pipe-cleaner', price:80,  description:'Beautiful rose crafted from soft red pipe cleaners'},
+    {id:19, name:'Crochet Hairband',     emoji:'🎀', category:'accessories',  price:120, description:'Handmade hairband with crochet flower detail'},
+    {id:20, name:'Floral Brooch',        emoji:'📌', category:'accessories',  price:90,  description:'Dainty crochet flower brooch for bags or clothes'},
+    {id:21, name:'Hair Clip Set',        emoji:'✨', category:'accessories',  price:110, description:'Set of 3 crochet flower hair clips'},
+    {id:22, name:'Wrist Corsage',        emoji:'💍', category:'accessories',  price:150, description:'Elegant crochet corsage on elastic wristband'},
+    {id:23, name:'Mini Tote',            emoji:'👜', category:'bags',         price:380, description:'Handcrocheted mini tote in natural cotton yarn'},
+    {id:24, name:'Flower Pouch',         emoji:'🌸', category:'bags',         price:260, description:'Floral-patterned crochet pouch with zipper'},
+    {id:25, name:'Market Basket',        emoji:'🧺', category:'bags',         price:520, description:'Classic market basket crocheted from jute yarn'},
+    {id:26, name:'Crochet Strawberry',   emoji:'🍓', category:'charms',       price:80,  description:'Tiny strawberry charm for bags or keys'},
+    {id:27, name:'Mini Mushroom',        emoji:'🍄', category:'charms',       price:75,  description:'Adorable toadstool crochet keychain charm'},
+    {id:28, name:'Flower Charm',         emoji:'🌸', category:'charms',       price:70,  description:'Sweet crochet bloom to clip anywhere'},
+    {id:29, name:'Rainbow Cloud',        emoji:'⛅', category:'charms',       price:85,  description:'Pastel rainbow cloud crochet charm'},
+  ];
+
+  // ── HELPERS ──
+  function getProducts() {
+    try {
+      var s = localStorage.getItem(STORE_KEY);
+      if (s) return JSON.parse(s);
+    } catch(e) {}
+    var copy = JSON.parse(JSON.stringify(DEFAULT));
+    localStorage.setItem(STORE_KEY, JSON.stringify(copy));
+    return copy;
+  }
+  function saveProducts(arr) { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }
+  function nextId(arr) { return arr.length ? Math.max.apply(null, arr.map(function(p){return Number(p.id);})) + 1 : 1; }
+  function catLabel(c) { return {characters:'Character',bouquet:'Bouquet','pipe-cleaner':'Pipe Cleaner',accessories:'Accessory',bags:'Bag',charms:'Charm'}[c] || c; }
+
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2500);
+  }
+
+  // ── SHOW / HIDE SCREENS ──
+  function showLogin() {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('panel-screen').style.display = 'none';
+  }
+  function showPanel() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('panel-screen').style.display = 'block';
+    refreshDashboard();
+  }
+
+  // ── LOGIN / LOGOUT ──
+  function tryLogin() {
+    var val = document.getElementById('pw-input').value.trim();
+    var err = document.getElementById('pw-error');
+    if (val === PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      err.style.display = 'none';
+      showPanel();
+    } else {
+      err.style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+  function doLogout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    showLogin();
+  }
+
+  // ── DASHBOARD ──
+  function refreshDashboard() {
+    var p = getProducts();
+    document.getElementById('s-total').textContent   = p.length;
+    document.getElementById('s-flowers').textContent = p.filter(function(x){return x.category==='bouquet'||x.category==='pipe-cleaner';}).length;
+    document.getElementById('s-chars').textContent   = p.filter(function(x){return x.category==='characters';}).length;
+    document.getElementById('s-acc').textContent     = p.filter(function(x){return x.category==='accessories';}).length;
+    document.getElementById('s-bags').textContent    = p.filter(function(x){return x.category==='bags';}).length;
+    document.getElementById('s-charms').textContent  = p.filter(function(x){return x.category==='charms';}).length;
+    renderList(p.slice().reverse().slice(0,6), 'recent-list');
+  }
+
+function renderList(arr, containerId) {
+    var c = document.getElementById(containerId);
+    if (!arr.length) { c.innerHTML = '<p class="no-items">No products yet.</p>'; return; }
+    c.innerHTML = arr.map(function(p) {
+      return '<div class="prod-row">' +
+        '<div class="prod-emoji">' + p.emoji + '</div>' +
+        '<div class="prod-info">' +
+          '<h4>' + p.name + '</h4>' +
+          '<span class="prod-price">₹' + p.price + '</span>' +
+          '<span class="prod-cat">· ' + catLabel(p.category) + '</span>' +
+        '</div>' +
+        '<div class="prod-btns">' +
+          '<button type="button" class="btn-edit" data-id="' + p.id + '">Edit</button>' +
+          '<button type="button" class="btn-del"  data-id="' + p.id + '">Delete</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    // Attach edit/delete via event delegation on the container
+    c.addEventListener('click', handleListClick);
+  }
+
+  function handleListClick(e) {
+    var editBtn = e.target.closest('.btn-edit');
+    var delBtn  = e.target.closest('.btn-del');
+    if (editBtn) openEdit(Number(editBtn.dataset.id));
+    if (delBtn)  deleteItem(Number(delBtn.dataset.id));
+  }
+
+  // ── VIEW ALL ──
+  function viewAll() {
+    var p = getProducts();
+    var allSec    = document.getElementById('all-section');
+    var recentSec = document.getElementById('recent-section');
+    document.getElementById('all-count').textContent = '(' + p.length + ')';
+    renderList(p.slice().reverse(), 'all-list');
+    allSec.style.display    = 'block';
+    recentSec.style.display = 'none';
+  }
+
+  // ── MODAL ──
+  function openAdd() {
+    document.getElementById('modal-title').textContent = 'Add New Product';
+    document.getElementById('edit-id').value  = '';
+    document.getElementById('f-name').value   = '';
+    document.getElementById('f-emoji').value  = '';
+    document.getElementById('f-price').value  = '';
+    document.getElementById('f-cat').value    = '';
+    document.getElementById('f-desc').value   = '';
+    document.getElementById('modal-overlay').classList.add('show');
+    document.getElementById('f-name').focus();
+  }
+  function openEdit(id) {
+    var p = getProducts().find(function(x){ return Number(x.id) === id; });
+    if (!p) { toast('Product not found'); return; }
+    document.getElementById('modal-title').textContent = 'Edit Product';
+    document.getElementById('edit-id').value  = p.id;
+    document.getElementById('f-name').value   = p.name;
+    document.getElementById('f-emoji').value  = p.emoji;
+    document.getElementById('f-price').value  = p.price;
+    document.getElementById('f-cat').value    = p.category;
+    document.getElementById('f-desc').value   = p.description || '';
+    document.getElementById('modal-overlay').classList.add('show');
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('show');
+  }
+  function saveProduct() {
+    var idVal = document.getElementById('edit-id').value.trim();
+    var name  = document.getElementById('f-name').value.trim();
+    var emoji = document.getElementById('f-emoji').value.trim();
+    var price = parseInt(document.getElementById('f-price').value, 10);
+    var cat   = document.getElementById('f-cat').value;
+    var desc  = document.getElementById('f-desc').value.trim();
+    if (!name)       { toast('Enter a product name');    return; }
+    if (!emoji)      { toast('Enter an emoji');          return; }
+    if (!price || price < 1) { toast('Enter a valid price'); return; }
+    if (!cat)        { toast('Select a category');       return; }
+    var products = getProducts();
+    if (idVal) {
+      products = products.map(function(p) {
+        return Number(p.id) === Number(idVal)
+          ? {id:p.id, name:name, emoji:emoji, price:price, category:cat, description:desc}
+          : p;
+      });
+      toast('Product updated ✓');
+    } else {
+      products.push({id:nextId(products), name:name, emoji:emoji, price:price, category:cat, description:desc});
+      toast('Product added ✓');
+    }
+    saveProducts(products);
+    closeModal();
+    refreshDashboard();
+    if (document.getElementById('all-section').style.display === 'block') viewAll();
+  }
+  function deleteItem(id) {
+    if (!confirm('Delete this product?')) return;
+    var products = getProducts().filter(function(p){ return Number(p.id) !== id; });
+    saveProducts(products);
+    toast('Deleted ✓');
+    refreshDashboard();
+    if (document.getElementById('all-section').style.display === 'block') viewAll();
+  }
+  function resetAll() {
+    if (!confirm('Reset ALL products to defaults?')) return;
+    saveProducts(JSON.parse(JSON.stringify(DEFAULT)));
+    toast('Reset to defaults ✓');
+    document.getElementById('all-section').style.display    = 'none';
+    document.getElementById('recent-section').style.display = 'block';
+    refreshDashboard();
+  }
+
+  // ── WIRE UP EVENTS (after DOM ready) ──
+  document.addEventListener('DOMContentLoaded', function() {
+
+    // Login
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('pw-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); tryLogin(); }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', doLogout);
+
+    // Quick actions
+    document.getElementById('btn-add-product').addEventListener('click', openAdd);
+    document.getElementById('btn-view-all').addEventListener('click',    viewAll);
+    document.getElementById('btn-view-store').addEventListener('click',  function(){ window.open('index.html','_blank'); });
+    document.getElementById('btn-reset-all').addEventListener('click',   resetAll);
+
+    // Modal
+    document.getElementById('modal-cancel').addEventListener('click', closeModal);
+    document.getElementById('modal-save').addEventListener('click',   saveProduct);
+    document.getElementById('modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Check session
+    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+      showPanel();
+    } else {
+      showLogin();
+    }
+  });
+
+})();
+</script>
 </body>
 </html>
